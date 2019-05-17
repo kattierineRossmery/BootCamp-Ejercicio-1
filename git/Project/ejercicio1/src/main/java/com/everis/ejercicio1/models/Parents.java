@@ -23,7 +23,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 /**
- * This class belongs to the entity Parents.
+ * Esta clase pertenece a la entidad Parents.
  * @version 15-05-2019 v1
  * @author kvilcave
  *
@@ -64,28 +64,28 @@ public class Parents {
   private String otherParentDetails;
 
   /**
-   * The entity Parents is relation One to Many to the entity Families.
-   * "parentsss" reference to the entity Families.
+   * La entidad Parents está en relación One to Many a la entidad Families.
+   * "parentsss" referncia a la entidad Families.
    */
   @JsonIgnore
   @OneToMany(mappedBy = "parentsss")
   private List<Families> listaFamilias;
 
   /**
-   * The entity Parents is relation One to Many to the entity FamilyMembers.
-   * "parents" reference to the entity FamilyMembers.
+   * La entidad Parents está en relación One to Many a la entidad FamilyMembers.
+   * "parents" referencia a la entidad FamilyMembers.
    */
   @JsonIgnore
   @OneToMany(mappedBy = "parents")
   private List<FamilyMembers> listaFamilyMembers;
 
   /**
-   * studentsParents is the new table created in 
-   * relation of many to many between 
-   * parents and students entities.
+   * studentsParents es la nueva tabla creada en 
+   * relación de muchos a muchos entre las entidades 
+   * parents y students.
    * 
-   * FK_Students is name the column.
-   * FK_Parents is name the column.
+   * FK_Students es el nombre de la columna que referencia a student_id.
+   * FK_Parents es el nombre de la columna que referencia a parent_id.
    * 
    * estudiantes reference to the entity Students.
    */

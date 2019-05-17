@@ -21,7 +21,7 @@ import javax.validation.constraints.NotNull;
 import lombok.Data;
 
 /**
- * This class belongs to the entity Families.
+ * Esta clase pertenece a la entidad Families.
  * @version 15-05-2019 V1
  * @author Kattierine Vilca - kvilcave
  *
@@ -45,9 +45,9 @@ public class Families {
   private String familyName;
 
   /**
-   * The entity Families is relation Many to One to the entity Parents.
-   * "parentsss" with the name of column "head_of_family_parent_id" is 
-   * referenced to the id(parent_id) of the entity Parents.
+   * La entidad Families esta en relacion Many to One con la entidad Parents.
+   * "parentsss" con el nombre de la columna "head_of_family_parent_id" es referenciado
+   * al id(parent_id) de la entidad Parents.
    */
   @NotNull
   @ApiModelProperty(value = "the family member parent id", required = true)
@@ -56,8 +56,8 @@ public class Families {
   private Parents parentsss;
 
   /**
-   * The entity Families is relation One to Many to the entity FamilyMembers.
-   * "families" reference to the entity FamilyMembers.
+   * La entidad Families esta en relacion One to Many con la entidad FamilyMembers.
+   * "families" referencia a la entidad FamilyMembers.
    */
   @JsonIgnore
   @OneToMany(mappedBy = "families")

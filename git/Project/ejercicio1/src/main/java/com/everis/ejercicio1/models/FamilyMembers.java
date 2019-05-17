@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * This class belongs to the entity FamilyMembers.
+ * Esta clase pertenece a la entidad FamilyMembers.
  * @version 15-05-2019 v1
  * @author kvilcave
  *
@@ -41,8 +41,8 @@ public class FamilyMembers {
   private String parentOrStudentMembers;
 
   /**
-   * The entity FamilyMembers is relation Many to One to the entity Families.
-   * "families" is referenced to the id(familyId) of entity Families.
+   * La entidad FamilyMembers está en relación Many to One con la entidad Families.
+   * "families" es refernciado al id(familyId) de la entidad Families.
    */
   @ManyToOne
   @ApiModelProperty(value = "the family's id", required = true)
@@ -50,8 +50,8 @@ public class FamilyMembers {
   private Families families;
 
   /**
-   * The entity FamilyMembers is relation Many to One to the entity Parents.
-   * "parents" is referenced to the id(parentId) in the entity Parents.
+   * La entidad FamilyMembers está en relacion Many to One a la entity Parents.
+   * "parents" es referenciado a la id(parentId) en la entidad Parents.
    */
   @ManyToOne
   @ApiModelProperty(value = "the parent's id", required = true)
@@ -59,8 +59,8 @@ public class FamilyMembers {
   private Parents parents;
 
   /**
-   * The entity FamilyMembers is relation Many to One to the entity Students.
-   * "students" is referenced to the id(studentId) in the entity Students.
+   * La entidad FamilyMembers esta en relacion Many to One a la entidad Students.
+   * "students" es refernciado a la id(studentId) en la entidad Students.
    */
   @ManyToOne
   @ApiModelProperty(value = "the student's id", required = true)

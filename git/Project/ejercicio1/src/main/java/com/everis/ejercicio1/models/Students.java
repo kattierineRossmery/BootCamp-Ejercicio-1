@@ -72,16 +72,16 @@ public class Students {
   private String otherStudentDetails;
 
   /**
-   * The entity Students is relation One to Many to the entity FamilyMembers.
-   * students is referenced to the entity FamilyMembers
+   * La entidad Students esta en relacion Uno a muchos a la entidad FamilyMembers.
+   * students es referenciado en la entidad FamilyMembers
    */
   @JsonIgnore
   @OneToMany(mappedBy = "students")
   private List<FamilyMembers> listaFamilyMembers;
 
   /**
-   * The entity Students is relation Many to Many to the entity Parents.
-   * estudiantes is referenced in the entity Parents.
+   * La entidad Students está en relación muchos a muchos con la entidad Parents.
+   * estudiantes es referenciado en la entidad Parents.
    */
   @JsonIgnore
   @ManyToMany(mappedBy = "estudiantes")
