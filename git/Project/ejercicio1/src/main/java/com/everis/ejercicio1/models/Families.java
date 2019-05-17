@@ -17,6 +17,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -41,6 +42,7 @@ public class Families {
 
   @NotNull
   @ApiModelProperty(value = "the family member name", required = true)
+  @Size(min=3, message = "Bombre familiar debe tener minimo 3 caracteres")
   @Column(name = "family_name")
   private String familyName;
 

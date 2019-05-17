@@ -1,6 +1,8 @@
 package com.everis.ejercicio1.Controller;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,44 +19,53 @@ public class RestParentsControllerTest {
 
 	@Autowired
 	IParentsRepo repoPa;
-	
+
 	@Test
 	public void testListar() {
-		repoPa.findAll();
+		/*repoPa = mock(IParentsRepo.class);
+		when(repoPa.findAll());
+*/		repoPa.findAll();
+
 	}
 
 	@Test
 	public void testInsertar() {
-		Parents par = new Parents();
-		//par.setParentId();
-		par.setFirstName("Damiela");
-		par.setGender("F");
-		par.setLastName("Perez");
-		par.setMiddleName("Maria");
-		par.setOtherParentDetails("hioh");	
-		repoPa.save(par);
+		repoPa=mock(IParentsRepo.class);
 		
-		assertTrue("true", true);
+		Parents par = new Parents();
+	
+		par.setFirstName("Damiela"); 
+		par.setGender("F");
+		par.setLastName("rt");
+		par.setMiddleName("Maria");
+		par.setOtherParentDetails("hioh");
+		//repoPa.save(par);
+
+		
+		when(repoPa.save(par));
+		
+		
+		//assertTrue();
 	}
 
 	@Test
 	public void testModificar() {
 		Parents par = new Parents();
-		par.setParentId(4);
+		par.setParentId(13);
 		par.setFirstName("juan");
 		par.setGender("M");
 		par.setLastName("Rosales");
 		par.setMiddleName("Pedro");
-		par.setOtherParentDetails("eeeee");	
+		par.setOtherParentDetails("eeeee");
 		repoPa.save(par);
-		
+
 		assertTrue("true", true);
 	}
 
 	@Test
 	public void testEliminar() {
-		
-		repoPa.deleteById(8);
+
+		repoPa.deleteById(12);
 	}
 
 }

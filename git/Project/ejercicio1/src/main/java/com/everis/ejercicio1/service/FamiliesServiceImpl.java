@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.everis.ejercicio1.models.Families;
@@ -38,20 +36,9 @@ public class FamiliesServiceImpl implements IFamiliesService {
    * this function is responsible for updating an existing record.
    */
   @Override
-  public void update(Families families) {
+  public Families update(Families families) {
  
-	  if(repo.findById(families.getFamilyId()).isPresent()) {
-		  repo.save(families);
-			new ResponseEntity<Families>(HttpStatus.CREATED);
-	  }
-	  else {
-			new ResponseEntity<Families>(HttpStatus.BAD_REQUEST);
-
-	  }
-	  
-    
-    
-    
+	  return repo.save(families);
   
   }
 
@@ -75,8 +62,9 @@ public class FamiliesServiceImpl implements IFamiliesService {
    */
   @Override
   public Optional<Families> listId(int id) {
-    return repo.findById(id);
+    return (Optional<Families>) repo.findById(id);
   }
+
 
   /**
    * this function is responsible for listing all the records of the Families entity.

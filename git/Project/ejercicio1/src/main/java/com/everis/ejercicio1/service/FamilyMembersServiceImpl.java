@@ -43,7 +43,7 @@ public class FamilyMembersServiceImpl implements IFamilyMembersService {
 	      
 		  familyMembers.setFamilies(n);
 	      
-	      if (familyMembers.getParentOrStudentMembers().equals("Parent")) {
+	      if (familyMembers.getParentOrStudentMembers().equals("P")) {
 	    	  
 	    	  Parents par = new Parents();
 	    	  
@@ -51,7 +51,7 @@ public class FamilyMembersServiceImpl implements IFamilyMembersService {
 	    		  familyMembers.setParents(parent);
 	      });
 	      
-	      } else if (familyMembers.getParentOrStudentMembers().equals("Student")) {
+	      } else if (familyMembers.getParentOrStudentMembers().equals("S")) {
 	      
 	    	  Students stu = new Students();
 	    	  

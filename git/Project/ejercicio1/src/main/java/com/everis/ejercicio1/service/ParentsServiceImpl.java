@@ -34,9 +34,12 @@ public class ParentsServiceImpl implements IParentsService {
     return (List<Parents>) repo.findAll();
   }
 
-  @Override
-  public Optional<Parents> listId(int id) {
-    return repo.findById(id);
-  }
+@Override
+public Optional<Parents> listId(int id) {
+	// TODO Auto-generated method stub
+	return repo.findById(id);
+}
+
+  
 
 }

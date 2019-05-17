@@ -1,5 +1,6 @@
 package com.everis.ejercicio1.Controller;
 
+import com.everis.ejercicio1.exception.ModeloNotFoundException;
 import com.everis.ejercicio1.models.Parents;
 import com.everis.ejercicio1.service.IParentsService;
 
@@ -8,6 +9,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,22 +81,19 @@ public class RestParentsController {
 	 */
 	@ApiOperation(value = "Create new parent")
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void insertar(@Valid @RequestBody Parents per) {
+	public ResponseEntity<Object> insertar(@Valid @RequestBody Parents per) {
 
-		// Parents par = new Parents();
-		try {
-			Parents perCreated = serv.create(per);
-			log.info("Se creo con exito a " + per.getFirstName() + " " + per.getLastName());
-			new ResponseEntity<Parents>(perCreated, HttpStatus.CREATED);
-		} catch (Exception e) {
-			log.error("registro no creado");
-			new ResponseEntity<Parents>(HttpStatus.BAD_REQUEST);
-
-			e.printStackTrace();
-		}
-
+		
+		Parents perCreated = serv.create(per);
+		
+		URI location= ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(perCreated.getParentId()).toUri();
+		
+		log.info("Se creo con exito a " + per.getFirstName() + " " + per.getLastName());
+		
+		
+		return ResponseEntity.created(location).build();
+	
 	}
-
 	/**
 	 * this function is responsible for updating an existing record.
 	 * 
@@ -103,7 +102,7 @@ public class RestParentsController {
 	 */
 	@ApiOperation(value = "Update parent")
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public String modificar(@RequestBody Parents per) {
+	public String modificar(@Valid @RequestBody Parents per) {
 		String mensaje = "";
 		Optional<Parents> obj = serv.listId(per.getParentId());
 
@@ -130,9 +129,28 @@ public class RestParentsController {
 	@ApiOperation(value = "Delete parent by id")
 	@DeleteMapping("/{id}")
 	public void eliminar(@PathVariable("id") Integer id) {
-		serv.delete(id);
-		new ResponseEntity<Parents>(HttpStatus.OK);
+		Optional<Parents> par = serv.listId(id);
+		if(par!=null) {
+			serv.delete(id);
+		}else {
+			
+			throw new ModeloNotFoundException("ID" + id);
+		}
+				
 
 	}
+	  /**
+	   * Esta función es responsable de listar un registro.
+	   * @param id - id dado por el usuario.
+	   */
+	  @ApiOperation(value = "Listar Parents por id")
+	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	  public ResponseEntity<Parents> listarParentsPorId(@PathVariable("id") Integer id) {
+		  
+	    
+	    System.out.println("hjkhkj"+ id);
+	   return new ResponseEntity<Parents>(serv.listId(id).get(), HttpStatus.OK);
+
+	  }
 
 }

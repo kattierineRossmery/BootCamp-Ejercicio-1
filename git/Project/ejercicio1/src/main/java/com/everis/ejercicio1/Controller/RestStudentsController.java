@@ -6,8 +6,11 @@ import com.everis.ejercicio1.service.IStudentsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,17 +59,16 @@ public class RestStudentsController {
 	 */
 	@ApiOperation(value = "Create new students")
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void insertar(@RequestBody Students stu) {
-		try {
-			serv.create(stu);
-			log.info("Se registro a"+ stu.getFirstName()+" "+ stu.getLastName());
-			new ResponseEntity<Students>(HttpStatus.CREATED);
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("registro no creado");
-			new ResponseEntity<Students>(HttpStatus.BAD_REQUEST);
-
-		}
+	public ResponseEntity<Object> insertar(@Valid @RequestBody Students stu) {
+		
+		Students stuCreated = serv.create(stu);;
+		
+		URI location= ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(stuCreated.getStudentId()).toUri();
+		
+		log.info("Se registro a"+ stu.getFirstName()+" "+ stu.getLastName());
+		
+		
+		return ResponseEntity.created(location).build();
 	}
 
 	/**
@@ -76,7 +79,7 @@ public class RestStudentsController {
 	 */
 	@ApiOperation(value = "Update students")
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public String modificar(@RequestBody Students stu) {
+	public String modificar(@Valid @RequestBody Students stu) {
 		String mensaje = "";
 		Optional<Students> obj = serv.listId(stu.getStudentId());
 
@@ -103,7 +106,7 @@ public class RestStudentsController {
 	 */
 	@ApiOperation(value = "Delete students by id")
 	@DeleteMapping("/{id}")
-	public void eliminar(@PathVariable("id") Integer id) {
+	public void eliminar(@Valid @PathVariable("id") Integer id) {
 		try {
 			serv.delete(id);
 			log.info("registro eliminado");
@@ -114,4 +117,17 @@ public class RestStudentsController {
 		}
 
 	}
+	 /**
+	   * Esta función es responsable de listar un registro.
+	   * @param id - id dado por el usuario.
+	   */
+	  @ApiOperation(value = "Listar family por id")
+	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	  public ResponseEntity<Students> listarStudentsPorId(@PathVariable("id") Integer id) {
+		  
+	    
+	    System.out.println("hjkhkj"+ id);
+	   return new ResponseEntity<Students>(serv.listId(id).get(), HttpStatus.OK);
+
+	  }
 }

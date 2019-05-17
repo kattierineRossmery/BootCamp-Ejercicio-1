@@ -1,13 +1,17 @@
 package com.everis.ejercicio1.Controller;
 
 import com.everis.ejercicio1.models.FamilyMembers;
+import com.everis.ejercicio1.models.Parents;
 import com.everis.ejercicio1.service.IFamilyMembersService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,18 +60,16 @@ public class RestFamilyMembersController {
 	
 	@ApiOperation(value = "Create new family")
 	@PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public void insertar(@RequestBody FamilyMembers famMembers) {
-		// Parents par = new Parents();
-		try {
-			FamilyMembers perCreated = serv.create(famMembers);
-			log.info("creado con exito");
-			new ResponseEntity<FamilyMembers>(perCreated, HttpStatus.CREATED);
-		} catch (Exception e) {
-			log.error("registro no creado");
-			new ResponseEntity<FamilyMembers>(HttpStatus.BAD_REQUEST);
-
-			e.printStackTrace();
-		}
+	public ResponseEntity<Object> insertar(@Valid @RequestBody FamilyMembers famMembers) {
+		FamilyMembers famMem = serv.create(famMembers);
+		
+		URI location= ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(famMem.getFamilyMemberId()).toUri();
+		
+		log.info("Se creo con exito a " + famMembers.getFamilyMemberId());
+		
+		
+		return ResponseEntity.created(location).build();
+	
 
 	}
 	
@@ -79,7 +82,7 @@ public class RestFamilyMembersController {
 	 * @param id ingresar id.
 	 */
 	@PostMapping("/api/1.0/familymembers/{familyId}/{parentOrStudentMember}/{id}")
-	  public void add(@RequestBody FamilyMembers familyMember,
+	  public void add(@Valid @RequestBody FamilyMembers familyMember,
 	      @PathVariable(value = "familyId") int familyId, 
 	      @PathVariable(value = "parentOrStudentMember") String parentOrStudentMember,
 	      @PathVariable(value = "id") int id) {
@@ -93,7 +96,7 @@ public class RestFamilyMembersController {
 	 */
 	@ApiOperation(value = "Update family")
 	@PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-	public String modificar(@RequestBody FamilyMembers famMembers) {
+	public String modificar(@Valid @RequestBody FamilyMembers famMembers) {
 		String mensaje = "";
 		Optional<FamilyMembers> obj = serv.listId(famMembers.getFamilyMemberId());
 
@@ -118,10 +121,23 @@ public class RestFamilyMembersController {
 	 */
 	@ApiOperation(value = "Delete family members by id")
 	@DeleteMapping("/{id}")
-	public void eliminar(@PathVariable("id") Integer id) {
+	public void eliminar(@Valid @PathVariable("id") Integer id) {
 
 		serv.delete(id);
 		new ResponseEntity<FamilyMembers>(HttpStatus.BAD_REQUEST);
 	}
+	/**
+	   * Esta función es responsable de listar un registro.
+	   * @param id - id dado por el usuario.
+	   */
+	  @ApiOperation(value = "Listar family por id")
+	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+	  public ResponseEntity<FamilyMembers> listarParentsPorId(@PathVariable("id") Integer id) {
+		  
+	    
+	    System.out.println("hjkhkj"+ id);
+	   return new ResponseEntity<FamilyMembers>(serv.listId(id).get(), HttpStatus.OK);
+
+	  }
 
 }

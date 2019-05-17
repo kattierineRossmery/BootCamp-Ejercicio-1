@@ -21,6 +21,7 @@ import javax.persistence.TemporalType;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Past;
+import javax.validation.constraints.Size;
 
 import lombok.Data;
 
@@ -48,15 +49,18 @@ public class Students {
 
   @NotBlank
   @ApiModelProperty(value = "the student first name", required = true)
+  @Size(min=3, message = "Primer nombre debe tener minimo 3 caracteres")
   @Column(name = "first_name")
   private String firstName;
 
   @ApiModelProperty(value = "the student middle name", required = true)
+  @Size(min=3, message = "Segundo nombre debe tener minimo 3 caracteres")
   @Column(name = "middle_name")
   private String middleName;
 
   @NotNull
   @ApiModelProperty(value = "the student's last name", required = true)
+  @Size(min=3, message = "Apellido debe tener minimo 3 caracteres")
   @Column(name = "last_name")
   private String lastName;
 

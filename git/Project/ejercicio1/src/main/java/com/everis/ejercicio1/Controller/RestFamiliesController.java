@@ -1,7 +1,10 @@
 package com.everis.ejercicio1.Controller;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.everis.ejercicio1.models.Families;
 import com.everis.ejercicio1.models.FamilyMembers;
@@ -64,7 +68,7 @@ public class RestFamiliesController {
   }
 
   /**
-   * Esta funcion es reposnsable de realizar un registro en
+   * Esta función es reposnsable de realizar un registro en
    * familia.
    * @param fam id de familia.
    * @return objeto.
@@ -72,31 +76,26 @@ public class RestFamiliesController {
   @ApiOperation(value = "Create new family")
   @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, 
       consumes = MediaType.APPLICATION_JSON_VALUE)
-  public Families insertar(@RequestBody Families fam) {
+  public ResponseEntity<Object> insertar(@Valid @RequestBody Families fam) {
 	  
-    try {
+	  Families famCreated = serv.create(fam);
 		
-
-       new ResponseEntity<Families>(serv.create(fam), HttpStatus.CREATED);
-       log.info("creado con exito" + " a la familia" + fam.getFamilyName());
-	} catch (Exception e) {
-		log.error("registro no creado");
-		new ResponseEntity<Families>(HttpStatus.BAD_REQUEST);
-
-		e.printStackTrace();
-	}
-    
-    return fam;
+		URI location= ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(famCreated.getFamilyId()).toUri();
+		
+		log.info("Se creo con exito a " + fam.getFamilyName());
+		
+		
+		return ResponseEntity.created(location).build();
   }
 
   /**
-   * Esta funcion es responsable de actualizar un registro.
+   * Esta función es responsable de actualizar un registro.
    * @param fam the Families.
    * @return objeto modificado.
    */
   @ApiOperation(value = "Update family")
   @PutMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-  public String modificar(@RequestBody Families fam) {
+  public String modificar(@Valid @RequestBody Families fam) {
 
 	  String mensaje = "";
 		Optional<Families> obj = serv.listId(fam.getFamilyId());
@@ -117,15 +116,29 @@ public class RestFamiliesController {
   }
 
   /**
-   * Esta funcion es responsable de eliminar un registro.
+   * Esta función es responsable de eliminar un registro.
    * @param id - id dado por el usuario, este tiene que existir.
    */
-  @ApiOperation(value = "Delete family by id")
+  @ApiOperation(value = "Listar family por id")
   @DeleteMapping("/{id}")
-  public void eliminar(@PathVariable("id") Integer id) {
+  public void eliminar(@Valid @PathVariable("id") Integer id) {
 	  
     serv.delete(id);
     new ResponseEntity<Families>(HttpStatus.OK);
+
+  }
+  
+  /**
+   * Esta función es responsable de listar un registro.
+   * @param id - id dado por el usuario.
+   * @return objeto Families.
+   */
+  @ApiOperation(value = "Listar family por id")
+  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+  public ResponseEntity<Families> listarFamiliesPorId(@PathVariable("id") Integer id) {
+	  
+    System.out.println("hjkhkj"+ id);
+   return new ResponseEntity<Families>(serv.listId(id).get(), HttpStatus.OK);
 
   }
 }
