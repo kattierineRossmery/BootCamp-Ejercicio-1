@@ -1,7 +1,7 @@
 package com.everis.ejercicio1.Controller;
 
+import com.everis.ejercicio1.exception.ModeloNotFoundException;
 import com.everis.ejercicio1.models.FamilyMembers;
-import com.everis.ejercicio1.models.Parents;
 import com.everis.ejercicio1.service.IFamilyMembersService;
 
 import io.swagger.annotations.Api;
@@ -106,9 +106,9 @@ public class RestFamilyMembersController {
 			log.info(mensaje);
 			new ResponseEntity<FamilyMembers>(HttpStatus.CREATED);
 		} else {
-			mensaje = "Pariente no existe";
+			mensaje = "ID - "+famMembers.getFamilyMemberId()+ " Pariente no existe";
 			log.error(mensaje);
-			new ResponseEntity<FamilyMembers>(HttpStatus.BAD_REQUEST);
+			throw new ModeloNotFoundException(mensaje);
 		}
 
 		return mensaje;
@@ -123,8 +123,13 @@ public class RestFamilyMembersController {
 	@DeleteMapping("/{id}")
 	public void eliminar(@Valid @PathVariable("id") Integer id) {
 
-		serv.delete(id);
-		new ResponseEntity<FamilyMembers>(HttpStatus.BAD_REQUEST);
+		Optional<FamilyMembers> famMem = serv.listId(id);
+		if(famMem.isPresent()) {
+			serv.delete(id);
+		}else {
+			
+			throw new ModeloNotFoundException("ID-" + id);
+		}
 	}
 	/**
 	   * Esta función es responsable de listar un registro.
@@ -132,12 +137,17 @@ public class RestFamilyMembersController {
 	   */
 	  @ApiOperation(value = "Listar family por id")
 	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	  public ResponseEntity<FamilyMembers> listarParentsPorId(@PathVariable("id") Integer id) {
+	  public ResponseEntity<Object> listarParentsPorId(@PathVariable("id") Integer id) {
 		  
-	    
-	    System.out.println("hjkhkj"+ id);
-	   return new ResponseEntity<FamilyMembers>(serv.listId(id).get(), HttpStatus.OK);
+		  Optional<FamilyMembers> fam = serv.listId(id);
+			if(!fam.isPresent()) {
+				throw new ModeloNotFoundException("ID-" + id);
+				
+			}
+			
+			return new ResponseEntity<Object>(fam, HttpStatus.OK);
 
+	  
 	  }
 
 }

@@ -22,30 +22,28 @@ public class RestParentsControllerTest {
 
 	@Test
 	public void testListar() {
-		/*repoPa = mock(IParentsRepo.class);
+		repoPa = mock(IParentsRepo.class);
 		when(repoPa.findAll());
-*/		repoPa.findAll();
+		repoPa.findAll();
 
 	}
 
 	@Test
 	public void testInsertar() {
-		repoPa=mock(IParentsRepo.class);
-		
+		repoPa = mock(IParentsRepo.class);
+
 		Parents par = new Parents();
-	
-		par.setFirstName("Damiela"); 
+
+		par.setFirstName("Damiela");
 		par.setGender("F");
-		par.setLastName("rt");
+		par.setLastName("rtttt");
 		par.setMiddleName("Maria");
 		par.setOtherParentDetails("hioh");
-		//repoPa.save(par);
+		// repoPa.save(par);
 
-		
-		when(repoPa.save(par));
-		
-		
-		//assertTrue();
+		when(repoPa.save(par)).thenReturn(par);
+
+		// assertTrue();
 	}
 
 	@Test

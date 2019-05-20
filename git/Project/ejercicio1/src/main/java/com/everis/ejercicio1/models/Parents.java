@@ -38,27 +38,27 @@ public class Parents {
   @Id
   @NotNull
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @ApiModelProperty(value = "the parent's id", required = true)
+  @ApiModelProperty(value = "Id de Parents", required = true)
   @Column(name = "parent_id")
   private int parentId;
 
   @NotNull @NotBlank
-  @ApiModelProperty(value = "the gender", required = true)
+  @ApiModelProperty(value = "Genero", required = true)
   private String gender;
 
   @NotNull @NotBlank
-  @ApiModelProperty(value = "the parent's first name", required = true)
+  @ApiModelProperty(value = "Primer nombre debe tener minimo 3 caracteres", required = true)
   @Size(min=3, message = "Primer nombre debe tener minimo 3 caracteres")
   @Column(name = "first_name")
   private String firstName;
 
-  @ApiModelProperty(value = "the parent's middle name", required = true)
+  @ApiModelProperty(value = "Segundo nombre debe tener minimo 3 caracteres", required = true)
   @Size(min=3, message = "Segundo nombre debe tener minimo 3 caracteres")
   @Column(name = "middle_name")
   private String middleName;
 
   @NotBlank
-  @ApiModelProperty(value = "the parent's last name", required = true)
+  @ApiModelProperty(value = "Apellido debe tener minimo 3 caracteres", required = true)
   @Size(min=3, message = "Apellido debe tener minimo 3 caracteres")
   @Column(name = "last_name")
   private String lastName;

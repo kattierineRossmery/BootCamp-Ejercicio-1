@@ -113,9 +113,9 @@ public class RestParentsController {
 			new ResponseEntity<Parents>(HttpStatus.CREATED);
 
 		} else {
-			mensaje = "Pariente no existe";
+			mensaje = "ID-" + per.getParentId()+" Pariente no existe";
 			log.error(mensaje);
-			new ResponseEntity<Parents>(HttpStatus.BAD_REQUEST);
+			throw new ModeloNotFoundException(mensaje);
 		}
 
 		return mensaje;
@@ -130,11 +130,11 @@ public class RestParentsController {
 	@DeleteMapping("/{id}")
 	public void eliminar(@PathVariable("id") Integer id) {
 		Optional<Parents> par = serv.listId(id);
-		if(par!=null) {
+		if(par.isPresent()) {
 			serv.delete(id);
 		}else {
 			
-			throw new ModeloNotFoundException("ID" + id);
+			throw new ModeloNotFoundException("ID-" + id);
 		}
 				
 
@@ -145,11 +145,15 @@ public class RestParentsController {
 	   */
 	  @ApiOperation(value = "Listar Parents por id")
 	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	  public ResponseEntity<Parents> listarParentsPorId(@PathVariable("id") Integer id) {
+	  public ResponseEntity<Object> listarParentsPorId(@PathVariable("id") Integer id) {
 		  
-	    
-	    System.out.println("hjkhkj"+ id);
-	   return new ResponseEntity<Parents>(serv.listId(id).get(), HttpStatus.OK);
+	   Optional<Parents> par = serv.listId(id);
+		if(!par.isPresent()) {
+			throw new ModeloNotFoundException("ID-" + id);
+			
+		}
+		
+		return new ResponseEntity<Object>(par, HttpStatus.OK);
 
 	  }
 

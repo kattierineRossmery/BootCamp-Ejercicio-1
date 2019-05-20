@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.everis.ejercicio1.exception.ModeloNotFoundException;
 import com.everis.ejercicio1.models.Families;
 import com.everis.ejercicio1.models.FamilyMembers;
 import com.everis.ejercicio1.service.IFamiliesService;
@@ -107,9 +108,9 @@ public class RestFamiliesController {
 			new ResponseEntity<Families>(HttpStatus.CREATED);
 
 		} else {
-			mensaje = "Families no existe";
+			mensaje = "Id -"+fam.getFamilyId()+" Families no existe";
 			log.error(mensaje);
-			new ResponseEntity<Families>(HttpStatus.BAD_REQUEST);
+			throw new ModeloNotFoundException(mensaje);
 		}
 
 		return mensaje;
@@ -123,8 +124,14 @@ public class RestFamiliesController {
   @DeleteMapping("/{id}")
   public void eliminar(@Valid @PathVariable("id") Integer id) {
 	  
-    serv.delete(id);
-    new ResponseEntity<Families>(HttpStatus.OK);
+	  Optional<Families> par = serv.listId(id);
+		if(par.isPresent()) {
+			serv.delete(id);
+		}else {
+			
+			throw new ModeloNotFoundException("ID-" + id);
+		}
+   
 
   }
   
@@ -135,10 +142,16 @@ public class RestFamiliesController {
    */
   @ApiOperation(value = "Listar family por id")
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Families> listarFamiliesPorId(@PathVariable("id") Integer id) {
+  public ResponseEntity<Object> listarFamiliesPorId(@PathVariable("id") Integer id) {
 	  
-    System.out.println("hjkhkj"+ id);
-   return new ResponseEntity<Families>(serv.listId(id).get(), HttpStatus.OK);
+	  Optional<Families> fam = serv.listId(id);
+		if(!fam.isPresent()) {
+			throw new ModeloNotFoundException("ID-" + id);
+			
+		}
+		
+		return new ResponseEntity<Object>(fam, HttpStatus.OK);
 
-  }
+	  }
+   
 }

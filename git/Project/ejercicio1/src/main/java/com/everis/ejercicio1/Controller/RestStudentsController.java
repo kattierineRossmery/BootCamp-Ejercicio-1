@@ -1,5 +1,6 @@
 package com.everis.ejercicio1.Controller;
 
+import com.everis.ejercicio1.exception.ModeloNotFoundException;
 import com.everis.ejercicio1.models.Students;
 import com.everis.ejercicio1.service.IStudentsService;
 
@@ -90,9 +91,9 @@ public class RestStudentsController {
 
 			log.info(mensaje + stu.getStudentId());
 		} else {
-			mensaje = "Pariente no existe";
+			mensaje = "ID - "+stu.getStudentId()+ " de Students no existe";
 			log.error(mensaje);
-			new ResponseEntity<Students>(HttpStatus.BAD_REQUEST);
+			throw new ModeloNotFoundException(mensaje);
 
 		}
 
@@ -107,27 +108,30 @@ public class RestStudentsController {
 	@ApiOperation(value = "Delete students by id")
 	@DeleteMapping("/{id}")
 	public void eliminar(@Valid @PathVariable("id") Integer id) {
-		try {
-			serv.delete(id);
-			log.info("registro eliminado");
-		} catch (Exception e) {
-			e.printStackTrace();
-			log.error("id no existe");
-			new ResponseEntity<Students>(HttpStatus.BAD_REQUEST);
-		}
+		 Optional<Students> stu = serv.listId(id);
+			if(stu.isPresent()) {
+				serv.delete(id);
+			}else {
+				
+				throw new ModeloNotFoundException("ID-" + id);
+			}
+	   
 
 	}
 	 /**
 	   * Esta función es responsable de listar un registro.
 	   * @param id - id dado por el usuario.
 	   */
-	  @ApiOperation(value = "Listar family por id")
+	  @ApiOperation(value = "Listar Students por id")
 	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	  public ResponseEntity<Students> listarStudentsPorId(@PathVariable("id") Integer id) {
-		  
-	    
-	    System.out.println("hjkhkj"+ id);
-	   return new ResponseEntity<Students>(serv.listId(id).get(), HttpStatus.OK);
+	  public ResponseEntity<Object> listarStudentsPorId(@PathVariable("id") Integer id) {
+		  Optional<Students> stu = serv.listId(id);
+			if(!stu.isPresent()) {
+				throw new ModeloNotFoundException("ID-" + id);
+				
+			}
+			
+			return new ResponseEntity<Object>(stu, HttpStatus.OK);
 
 	  }
 }
