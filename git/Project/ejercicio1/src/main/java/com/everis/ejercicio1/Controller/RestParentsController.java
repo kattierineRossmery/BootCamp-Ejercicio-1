@@ -1,5 +1,8 @@
 package com.everis.ejercicio1.Controller;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import com.everis.ejercicio1.exception.ModeloNotFoundException;
 import com.everis.ejercicio1.models.Parents;
 import com.everis.ejercicio1.service.IParentsService;
@@ -17,6 +20,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -145,7 +150,7 @@ public class RestParentsController {
 	   */
 	  @ApiOperation(value = "Listar Parents por id")
 	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	  public ResponseEntity<Object> listarParentsPorId(@PathVariable("id") Integer id) {
+	  public Resource<Object> listarParentsPorId(@PathVariable("id") Integer id) {
 		  
 	   Optional<Parents> par = serv.listId(id);
 		if(!par.isPresent()) {
@@ -153,7 +158,14 @@ public class RestParentsController {
 			
 		}
 		
-		return new ResponseEntity<Object>(par, HttpStatus.OK);
+		//return new ResponseEntity<Object>(par, HttpStatus.OK);
+		
+		  Resource<Object> resource = new Resource<Object>(par);
+		  ControllerLinkBuilder linkto = linkTo(methodOn(this.getClass()).listarParentsPorId(id));
+
+		  resource.add(linkto.withRel("links"));
+		  
+		  return resource;
 
 	  }
 

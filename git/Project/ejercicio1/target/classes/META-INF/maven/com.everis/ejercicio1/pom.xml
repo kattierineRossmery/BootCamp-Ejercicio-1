@@ -70,6 +70,13 @@
 			<optional>true</optional>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/org.springframework.hateoas/spring-hateoas -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-hateoas</artifactId>
+		</dependency>
+		
+		
 		<!-- https://mvnrepository.com/artifact/io.reactivex.rxjava2/rxjava -->		
 		<!-- <dependency>
 			<groupId>io.reactivex.rxjava2</groupId>

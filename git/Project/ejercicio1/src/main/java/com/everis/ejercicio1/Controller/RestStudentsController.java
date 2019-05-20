@@ -7,6 +7,9 @@ import com.everis.ejercicio1.service.IStudentsService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
+
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -14,6 +17,8 @@ import java.util.Optional;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -124,14 +129,20 @@ public class RestStudentsController {
 	   */
 	  @ApiOperation(value = "Listar Students por id")
 	  @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-	  public ResponseEntity<Object> listarStudentsPorId(@PathVariable("id") Integer id) {
+	  public Resource<Object> listarStudentsPorId(@PathVariable("id") Integer id) {
 		  Optional<Students> stu = serv.listId(id);
 			if(!stu.isPresent()) {
 				throw new ModeloNotFoundException("ID-" + id);
 				
 			}
 			
-			return new ResponseEntity<Object>(stu, HttpStatus.OK);
+		//	return new ResponseEntity<Object>(stu, HttpStatus.OK);
+			 Resource<Object> resource = new Resource<Object>(stu);
+			  ControllerLinkBuilder linkto = linkTo(methodOn(this.getClass()).listarStudentsPorId(id));
+
+			  resource.add(linkto.withRel("links"));
+			  
+			  return resource;
 
 	  }
 }

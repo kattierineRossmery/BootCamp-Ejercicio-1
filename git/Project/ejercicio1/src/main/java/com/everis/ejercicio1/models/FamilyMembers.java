@@ -37,7 +37,7 @@ public class FamilyMembers {
   private int familyMemberId;
 
   @ApiModelProperty(value = "Parent or student", required = true)
-  @Column(name = "parent_or_student_members")
+  @Column(name = "parent_or_student_members", length = 10)
   private String parentOrStudentMembers;
 
   /**

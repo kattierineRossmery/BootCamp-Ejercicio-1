@@ -8,8 +8,10 @@ import io.swagger.annotations.ApiModelProperty;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -50,18 +52,18 @@ public class Students {
   @NotBlank
   @ApiModelProperty(value = "the student first name", required = true)
   @Size(min=3, message = "Primer nombre debe tener minimo 3 caracteres")
-  @Column(name = "first_name")
+  @Column(name = "first_name",length = 70)
   private String firstName;
 
   @ApiModelProperty(value = "the student middle name", required = true)
   @Size(min=3, message = "Segundo nombre debe tener minimo 3 caracteres")
-  @Column(name = "middle_name")
+  @Column(name = "middle_name", length = 70)
   private String middleName;
 
   @NotNull
   @ApiModelProperty(value = "the student's last name", required = true)
   @Size(min=3, message = "Apellido debe tener minimo 3 caracteres")
-  @Column(name = "last_name")
+  @Column(name = "last_name", length = 70)
   private String lastName;
 
   @NotNull
@@ -72,7 +74,7 @@ public class Students {
   private Date dateOfBirth;
 
   @ApiModelProperty(value = "the student's details", required = true)
-  @Column(name = "other_student_details")
+  @Column(name = "other_student_details", length = 180)
   private String otherStudentDetails;
 
   /**
@@ -80,7 +82,8 @@ public class Students {
    * students es referenciado en la entidad FamilyMembers
    */
   @JsonIgnore
-  @OneToMany(mappedBy = "students")
+  @OneToMany(mappedBy = "students", cascade = {CascadeType.PERSIST,CascadeType.MERGE,
+		  CascadeType.REMOVE},fetch = FetchType.LAZY,orphanRemoval = true)
   private List<FamilyMembers> listaFamilyMembers;
 
   /**

@@ -7,8 +7,10 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,7 +45,7 @@ public class Families {
   @NotNull
   @ApiModelProperty(value = "the family member name", required = true)
   @Size(min=3, message = "Bombre familiar debe tener minimo 3 caracteres")
-  @Column(name = "family_name")
+  @Column(name = "family_name", length = 70)
   private String familyName;
 
   /**
@@ -62,7 +64,8 @@ public class Families {
    * "families" referencia a la entidad FamilyMembers.
    */
   @JsonIgnore
-  @OneToMany(mappedBy = "families")
+  @OneToMany(mappedBy = "families", cascade = {CascadeType.PERSIST,CascadeType.MERGE,
+		  CascadeType.REMOVE},fetch = FetchType.LAZY,orphanRemoval = true)
   private List<FamilyMembers> listaFamilyMembers;
 
 }

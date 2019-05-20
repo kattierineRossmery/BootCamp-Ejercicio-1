@@ -1,12 +1,18 @@
 package com.everis.ejercicio1.Controller;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
+import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.Resource;
+import org.springframework.hateoas.mvc.ControllerLinkBuilder;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.everis.ejercicio1.dto.FamiliesDTO;
 import com.everis.ejercicio1.exception.ModeloNotFoundException;
 import com.everis.ejercicio1.models.Families;
 import com.everis.ejercicio1.models.FamilyMembers;
@@ -53,6 +60,29 @@ public class RestFamiliesController {
     return new ResponseEntity<List<Families>>(serv.list(), HttpStatus.OK);
     
 
+  }
+  @GetMapping(value = "/hateoas", produces = MediaType.APPLICATION_JSON_VALUE)
+  public List<FamiliesDTO> listarHateoas(){
+	  List<Families> fam=new ArrayList<>();
+	  List<FamiliesDTO> famDTO= new ArrayList<>();
+	  
+	  fam = serv.list();
+	  
+	  for(Families f : fam) {
+		  FamiliesDTO fd = new FamiliesDTO();
+		  fd.setFamilyId(f.getFamilyId());
+		  fd.setParentsss(f.getParentsss());
+		  
+		  ControllerLinkBuilder linkTo = linkTo(methodOn(this.getClass()).listarFamiliesPorId(f.getFamilyId()));
+		  fd.add(linkTo.withRel("links"));
+		  famDTO.add(fd);
+		  
+		  ControllerLinkBuilder linkTo1 = linkTo(methodOn(RestParentsController.class).listarParentsPorId(f.getParentsss().getParentId()));
+		  fd.add(linkTo1.withRel("Links"));
+		  famDTO.add(fd);
+	  }
+	  
+	  return famDTO;
   }
 
   /**
@@ -124,15 +154,13 @@ public class RestFamiliesController {
   @DeleteMapping("/{id}")
   public void eliminar(@Valid @PathVariable("id") Integer id) {
 	  
-	  Optional<Families> par = serv.listId(id);
-		if(par.isPresent()) {
+	  Optional<Families> fam = serv.listId(id);
+		if(fam.isPresent()) {
 			serv.delete(id);
 		}else {
 			
 			throw new ModeloNotFoundException("ID-" + id);
 		}
-   
-
   }
   
   /**
@@ -142,7 +170,7 @@ public class RestFamiliesController {
    */
   @ApiOperation(value = "Listar family por id")
   @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-  public ResponseEntity<Object> listarFamiliesPorId(@PathVariable("id") Integer id) {
+  public Resource<Object> listarFamiliesPorId(@PathVariable("id") Integer id) {
 	  
 	  Optional<Families> fam = serv.listId(id);
 		if(!fam.isPresent()) {
@@ -150,8 +178,16 @@ public class RestFamiliesController {
 			
 		}
 		
-		return new ResponseEntity<Object>(fam, HttpStatus.OK);
+		//return new ResponseEntity<Object>(fam, HttpStatus.OK);
+		
+		  Resource<Object> resource = new Resource<Object>(fam);
+		  ControllerLinkBuilder linkto = linkTo(methodOn(this.getClass()).listarFamiliesPorId(id));
 
+		  resource.add(linkto.withRel("links"));
+		  
+		  return resource;
 	  }
+
+
    
 }

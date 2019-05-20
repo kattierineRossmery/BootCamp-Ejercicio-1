@@ -5,6 +5,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -48,23 +49,23 @@ public class Parents {
 
   @NotNull @NotBlank
   @ApiModelProperty(value = "Primer nombre debe tener minimo 3 caracteres", required = true)
-  @Size(min=3, message = "Primer nombre debe tener minimo 3 caracteres")
+  @Size(min=3, max =70, message = "Primer nombre debe tener minimo 3 caracteres")
   @Column(name = "first_name")
   private String firstName;
 
   @ApiModelProperty(value = "Segundo nombre debe tener minimo 3 caracteres", required = true)
-  @Size(min=3, message = "Segundo nombre debe tener minimo 3 caracteres")
+  @Size(min=3, max=70, message = "Segundo nombre debe tener minimo 3 caracteres")
   @Column(name = "middle_name")
   private String middleName;
 
   @NotBlank
   @ApiModelProperty(value = "Apellido debe tener minimo 3 caracteres", required = true)
-  @Size(min=3, message = "Apellido debe tener minimo 3 caracteres")
+  @Size(min=3,max=70, message = "Apellido debe tener minimo 3 caracteres")
   @Column(name = "last_name")
   private String lastName;
 
   @ApiModelProperty(value = "the parent's details", required = true)
-  @Column(name = "other_parent_details")
+  @Column(name = "other_parent_details", length = 180)
   private String otherParentDetails;
 
   /**
@@ -72,7 +73,8 @@ public class Parents {
    * "parentsss" referncia a la entidad Families.
    */
   @JsonIgnore
-  @OneToMany(mappedBy = "parentsss")
+  @OneToMany(mappedBy = "parentsss", cascade = {CascadeType.PERSIST,CascadeType.MERGE,
+		  CascadeType.REMOVE},fetch = FetchType.LAZY,orphanRemoval = true)
   private List<Families> listaFamilias;
 
   /**
@@ -80,7 +82,8 @@ public class Parents {
    * "parents" referencia a la entidad FamilyMembers.
    */
   @JsonIgnore
-  @OneToMany(mappedBy = "parents")
+  @OneToMany(mappedBy = "parents", cascade = {CascadeType.PERSIST,CascadeType.MERGE,
+		  CascadeType.REMOVE},fetch = FetchType.LAZY,orphanRemoval = true)
   private List<FamilyMembers> listaFamilyMembers;
 
   /**
